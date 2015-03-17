@@ -1,4 +1,3 @@
-
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -11,7 +10,6 @@ using std::string;
 
 #include "environment.h"
 #include "random_num_gen.h"
-#include"include/GL/glui.h"
 
 Environment::Environment(ifstream &infile)
 {
@@ -91,7 +89,7 @@ void Environment::Change(const RandomNumberGenerator &rng)
 		}// for - col
 	}// for - row
 }
-// -----------------------------------------------------------
+
 void Environment::AcceptAction(Agent::ActionType action)
 {
 	bump_ = false;
@@ -143,4 +141,4 @@ void Environment::AcceptAction(Agent::ActionType action)
 	}
 	preAction_=action;
 }
-// -----------------------------------------------------------
+
