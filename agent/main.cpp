@@ -124,8 +124,14 @@ void newGame(){
 
 int main(int argc, char* argv[]){
     file_name_input = argv[1];
-    newGame();
-    doOneRun(); 
-    cout << Trufa_Collected << endl;
+    long long trufa_total;
+
+    for (int i=0; i<10; i++) {
+        newGame();
+        doOneRun();
+        trufa_total += Trufa_Collected;
+    }
+
+    cout << trufa_total/10.0 << endl;
 }
 
