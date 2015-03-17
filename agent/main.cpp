@@ -3,7 +3,6 @@
 #include<iomanip>
 #include<iostream>
 #include <unistd.h>
-using namespace std;
 #include<stdlib.h>
 #include"random_num_gen.h"
 #include"environment.h"
@@ -11,6 +10,7 @@ using namespace std;
 #include"evaluator.h"
 #include"string.h"
 #include<string>
+using namespace std;
 
 const int NEWGAME_BTN_ID=102,SELECTMAP_BTN_ID=103,DISPLAY_BTN_ID=104,NEWMAP_BTN_ID=105;
 const int NEWMAP_OK_BTN_ID=202,NEWMAP_CANCEL_BTN_ID=203;
