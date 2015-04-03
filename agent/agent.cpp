@@ -6,8 +6,40 @@
 #include <utility>
 
 using namespace std;
+
+// AUXILIARY FUNCTIONS
+typedef vector< vector<bool> > Map;
+
+void draw_map(Map& map) {
+    for (int i=0; i<20; i++) {
+        for (int j=0; j<20; j++) {
+            if (map[i][j])
+                cerr << "%";
+            else
+                cerr << ".";
+        }
+        cerr << endl;
+    }
+}
+
 // -----------------------------------------------------------
+// Edited Code
+// -----------------------------------------------------------
+
 Agent::ActionType Agent::Think() {
+    // DEFINITIONS
+
+
+    // Iconic map, up to relative position
+    static Map mapa = Map(20, vector<bool>(20, false));
+    static int posx = 0;
+    static int posy = 0;
+
+    // Number of iterations
+    static int iteration = 0;
+
+
+    // REAL CODE
     ActionType accion;
 
     switch(rand()%5){
@@ -23,17 +55,22 @@ Agent::ActionType Agent::Think() {
         break;
     }
 
-    //if (trufa_size_ > 0)
-    //    accion = actEXTRACT;
 
+    // POSCONDITIONS
+    iteration++;
+    if (iteration == 1000) draw_map(mapa);
     return accion;
 }
+
 // -----------------------------------------------------------
+//
+// -----------------------------------------------------------
+
 void Agent::Perceive(const Environment &env) {
     trufa_size_ = env.TrufaAmount();
     bump_ = env.isJustBump();
 }
-// -----------------------------------------------------------
+
 string ActionStr(Agent::ActionType accion)
 {
     switch (accion) {
