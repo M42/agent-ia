@@ -132,6 +132,6 @@ int main(int argc, char* argv[]){
         trufa_total += Trufa_Collected;
     }
 
-    cout << trufa_total/10.0 << endl;
+    cout << trufa_total/10.0;
 }
 
