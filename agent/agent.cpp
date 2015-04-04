@@ -19,6 +19,26 @@ void draw_map(Map& map) {
     }
 }
 
+Agent::Direction Agent::gira(Direction d, ActionType a) {
+    if (a == actTURN_L)
+        switch (d) {
+        case up:    return left;  break;
+        case left:  return down;  break;
+        case down:  return right; break;
+        case right: return up;    break;
+        }
+
+    if (a == actTURN_R)
+        switch (d) {
+        case up:    return right; break;
+        case right: return down;  break;
+        case down:  return left;  break;
+        case left:  return up;    break;
+        }
+
+    return d;
+}
+
 
 //////////////////////////////
 // Reacting
@@ -32,20 +52,7 @@ void Agent::update() {
 }
 
 void Agent::updateDir() {
-    if (currAction == actTURN_L)
-        switch (dir) {
-        case up:    dir = left;  break;
-        case left:  dir = down;  break;
-        case down:  dir = right; break;
-        case right: dir = up;    break;
-        }
-    if (currAction == actTURN_R)
-        switch (dir) {
-        case up:    dir = right; break;
-        case right: dir = down;  break;
-        case down:  dir = left;  break;
-        case left:  dir = up;    break;
-        }
+    dir = gira(dir,currAction);
 }
 
 void Agent::updatePos() {
@@ -94,19 +101,37 @@ Agent::ActionType Agent::Think_random() {
     return accion;
 }
 
+Agent::ActionType Agent::Think_randomly() {
+    ActionType accion;
+
+    switch(rand()%4){
+    case 0: accion=actFORWARD;
+        break;
+    case 1: accion=actTURN_L;
+        break;
+    case 2: accion=actTURN_R;
+        break;
+    case 3: accion=actEXTRACT;
+        break;
+    }
+    
+    return accion;
+}
+
 Agent::ActionType Agent::Think_walls() {
     ActionType accion;
 
+    // Evita caminar contra una pared
     if (mapa[nextposx][nextposy] == true) {
-        switch(rand()%2){
-        case 0: accion=actTURN_L;
-            break;
-        case 1: accion=actTURN_R;
-            break;
+        // Gira hacia donde no haya paredes.
+        // Prueba hacia un sentido, y, si hay una pared, usa el contrario.
+        switch(rand()%2) {
+        case 0: accion=actTURN_L; break;
+        case 1: accion=actTURN_R; break;
         }
     }
     else {
-        accion = Think_random();
+        accion = Think_randomly();
     }
 
     return accion;
@@ -125,6 +150,9 @@ Agent::ActionType Agent::Think() {
 
 
     currAction = Think_random();
+#ifdef RANDOMLY
+    currAction = Think_randomly();
+#endif
 #ifdef WALLS
     currAction = Think_walls();
 #endif

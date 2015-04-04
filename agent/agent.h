@@ -46,6 +46,7 @@ class Agent {
 
     ActionType Think();
     ActionType Think_random();
+    ActionType Think_randomly();
     ActionType Think_walls();
 
     void update();
@@ -66,6 +67,8 @@ class Agent {
     ActionType currAction;
 
     Map mapa;
+
+    Direction gira(Direction,ActionType);
 };
 
 string ActionStr(Agent::ActionType);
