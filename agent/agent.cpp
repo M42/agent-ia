@@ -123,7 +123,11 @@ Agent::ActionType Agent::Think() {
     iteration++;
     if (iteration == 1000) draw_map(mapa);
 
+
+    currAction = Think_random();
+#ifdef WALLS
     currAction = Think_walls();
+#endif
 
     return currAction;
 }
