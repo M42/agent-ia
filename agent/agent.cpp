@@ -148,7 +148,7 @@ Agent::ActionType Agent::Think() {
 
     // POSCONDITIONS
     iteration++;
-    if (iteration == 1000) draw_map(mapa);
+    if (iteration == 2000) draw_map(mapa);
 
 
     currAction = Think_random();
