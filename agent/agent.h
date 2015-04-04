@@ -69,6 +69,7 @@ class Agent {
     Map mapa;
 
     Direction gira(Direction,ActionType);
+    ActionType aleatoriza(int,int,int,int,int,int);
 };
 
 string ActionStr(Agent::ActionType);

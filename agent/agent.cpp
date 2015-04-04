@@ -39,6 +39,23 @@ Agent::Direction Agent::gira(Direction d, ActionType a) {
     return d;
 }
 
+Agent::ActionType Agent::aleatoriza(int pf, int pl, int pr, int ps, int pe, int pi) {
+    int suma = pf + pl + pr + ps + pe + pi;
+    int prob = rand()%suma;
+    
+    if (prob < pf) 
+        return actFORWARD;
+    if (prob < pf+pl) 
+        return actTURN_L;
+    if (prob < pf+pl+pr) 
+        return actTURN_R;
+    if (prob < pf+pl+pr+ps) 
+        return actSNIFF;
+    if (prob < pf+pl+pr+ps+pe)
+        return actEXTRACT;
+    if (prob < pf+ps+pr+ps+pe+pi) 
+        return actIDLE;
+}
 
 //////////////////////////////
 // Reacting
@@ -83,39 +100,11 @@ void Agent::updateMap() {
 // -----------------------------------------------------------
 
 Agent::ActionType Agent::Think_random() {
-    ActionType accion;
-
-    switch(rand()%5){
-    case 0: accion=actFORWARD;
-        break;
-    case 1: accion=actTURN_L;
-        break;
-    case 2: accion=actTURN_R;
-        break;
-    case 3: accion=actSNIFF;
-        break;
-    case 4: accion=actEXTRACT;
-        break;
-    }
-    
-    return accion;
+    return aleatoriza(1,1,1,1,1,0);
 }
 
 Agent::ActionType Agent::Think_randomly() {
-    ActionType accion;
-
-    switch(rand()%4){
-    case 0: accion=actFORWARD;
-        break;
-    case 1: accion=actTURN_L;
-        break;
-    case 2: accion=actTURN_R;
-        break;
-    case 3: accion=actEXTRACT;
-        break;
-    }
-    
-    return accion;
+    return aleatoriza(1,1,1,0,1,0);
 }
 
 Agent::ActionType Agent::Think_walls() {
@@ -123,15 +112,28 @@ Agent::ActionType Agent::Think_walls() {
 
     // Evita caminar contra una pared
     if (mapa[nextposx][nextposy] == true) {
-        // Gira hacia donde no haya paredes.
-        // Prueba hacia un sentido, y, si hay una pared, usa el contrario.
-        switch(rand()%2) {
-        case 0: accion=actTURN_L; break;
-        case 1: accion=actTURN_R; break;
-        }
+        accion = aleatoriza(0,1,1,0,1,0);
     }
     else {
         accion = Think_randomly();
+    }
+
+    // Si al girar va a encontrar una pared, gira al otro lado
+    int giraposx = posx;
+    int giraposy = posy;
+        
+    switch (gira(dir,accion)) {
+    case up: giraposy--; break;
+    case down: giraposy++; break;
+    case left: giraposx--; break;
+    case right: giraposx++; break;
+    }
+    
+    if (mapa[giraposx][giraposy] == true) {
+        if (accion == actTURN_L)
+            accion = actTURN_R;
+        else
+            accion = actTURN_L;
     }
 
     return accion;
