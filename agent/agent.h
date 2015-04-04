@@ -2,7 +2,9 @@
 #define AGENT__
 
 #include <string>
+#include <vector>
 using namespace std;
+typedef vector< vector<bool> > Map;
 
 // -----------------------------------------------------------
 //				class Agent
@@ -14,8 +16,12 @@ class Agent {
         trufa_size_=-1;
         bump_=false;
 
-        posx = 0;
-        posy = 0;
+        posx = 10;
+        posy = 10;
+        dir  = up;
+        
+        mapa = Map(20, vector<bool>(20, false));
+        currAction = actIDLE;
     }
 
     enum ActionType {
@@ -35,10 +41,14 @@ class Agent {
     };
 
     void Perceive(const Environment &env);
+
     ActionType Think();
     ActionType Think_random();
+    ActionType Think_walls();
+
     Direction updateDir(Direction, ActionType);
     void updatePos(Direction);
+    void updateMap();
 
  private:
     int trufa_size_;
@@ -46,6 +56,11 @@ class Agent {
 
     int posx;
     int posy;
+    Direction dir;
+
+    ActionType currAction;
+
+    Map mapa;
 };
 
 string ActionStr(Agent::ActionType);

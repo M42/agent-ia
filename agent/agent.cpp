@@ -2,21 +2,20 @@
 #include "environment.h"
 #include <iostream>
 #include <cstdlib>
-#include <vector>
 #include <utility>
 
 using namespace std;
 
 // AUXILIARY FUNCTIONS
-typedef vector< vector<bool> > Map;
+
 
 void draw_map(Map& map) {
     for (int i=0; i<20; i++) {
         for (int j=0; j<20; j++) {
             if (map[i][j])
-                cerr << "%";
+                cerr << "0";
             else
-                cerr << ".";
+                cerr << "-";
         }
         cerr << endl;
     }
@@ -51,6 +50,22 @@ void Agent::updatePos(Agent::Direction dir) {
     }
 }
 
+void Agent::updateMap() {
+    if (bump_) {
+        int posbumpx = posx;
+        int posbumpy = posy;
+
+        switch (dir) {
+        case up: posbumpy--; break;
+        case down: posbumpy++; break;
+        case left: posbumpx--; break;
+        case right: posbumpx++; break;
+        }
+
+        mapa[posbumpx][posbumpy] = true;
+    }
+}
+
 // -----------------------------------------------------------
 // Edited Code
 // -----------------------------------------------------------
@@ -74,23 +89,50 @@ Agent::ActionType Agent::Think_random() {
     return accion;
 }
 
-Agent::ActionType Agent::Think() {
-    // DEFINITIONS
+Agent::ActionType Agent::Think_walls() {
     ActionType accion;
+    int posbumpx = posx;
+    int posbumpy = posy;
 
-    // Iconic map, up to relative position
-    static Map mapa = Map(20, vector<bool>(20, false));
-    static Direction dir = up;
+    switch (dir) {
+    case up: posbumpy--; break;
+    case down: posbumpy++; break;
+    case left: posbumpx--; break;
+    case right: posbumpx++; break;
+    }
 
+    if (mapa[posbumpx][posbumpy] == true) {
+        switch(rand()%2){
+        case 0: accion=actTURN_L;
+            break;
+        case 1: accion=actTURN_R;
+            break;
+        }
+    }
+    else {
+        accion = Think_random();
+    }
+
+    return accion;
+}
+
+Agent::ActionType Agent::Think() {
     // Number of iterations
     static int iteration = 0;
+
+    // PRECONDITIONS
+    updateMap();
+    if ((currAction == actFORWARD) and (not bump_))
+        updatePos(dir);
+    dir = updateDir(dir,currAction);
 
     // POSCONDITIONS
     iteration++;
     if (iteration == 1000) draw_map(mapa);
 
-    dir = updateDir(dir,accion);
-    accion = Think_random();
+    currAction = Think_walls();
+
+    return currAction;
 }
 
 // -----------------------------------------------------------
@@ -102,8 +144,7 @@ void Agent::Perceive(const Environment &env) {
     bump_ = env.isJustBump();
 }
 
-string ActionStr(Agent::ActionType accion)
-{
+string ActionStr(Agent::ActionType accion) {
     switch (accion) {
     case Agent::actFORWARD: return "FORWARD";
     case Agent::actTURN_L: return "TURN LEFT";
