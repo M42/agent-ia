@@ -18,6 +18,8 @@ class Agent {
 
         posx = 10;
         posy = 10;
+        nextposx = 10;
+        nextposy = 9;
         dir  = up;
         
         mapa = Map(20, vector<bool>(20, false));
@@ -46,8 +48,9 @@ class Agent {
     ActionType Think_random();
     ActionType Think_walls();
 
-    Direction updateDir(Direction, ActionType);
-    void updatePos(Direction);
+    void update();
+    void updateDir();
+    void updatePos();
     void updateMap();
 
  private:
@@ -56,6 +59,8 @@ class Agent {
 
     int posx;
     int posy;
+    int nextposx;
+    int nextposy;
     Direction dir;
 
     ActionType currAction;
