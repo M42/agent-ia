@@ -107,6 +107,7 @@ class Agent {
 
     Direction gira(Direction,ActionType);
     ActionType aleatoriza();
+    int valor(int,int);
 
     int growFactor;
 };

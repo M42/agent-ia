@@ -154,7 +154,9 @@ void Agent::updateAct() {
 // Analizing
 // -----------------------------------------------------------
 
-
+int Agent::valor(int posx, int posy) {
+    return mapa[posx][posy];// + (expl[posx][posy]? 2000 : 0);
+}
 
 // -----------------------------------------------------------
 // Thinking
@@ -237,12 +239,12 @@ Agent::ActionType Agent::Think_map() {
     if (mapa[posx][posy] >= SUFICIENTE_TRUFA) {
         accion = actEXTRACT;
     }
-    else if (mapa[nextposx][nextposy] != 0 and 
-             mapa[nextposx][nextposy]*FACTOR_GIRO >= mapa[leftposx][leftposy] and
-             mapa[nextposx][nextposy]*FACTOR_GIRO >= mapa[rghtposx][rghtposy]) {
+    else if (valor(nextposx,nextposy) != 0 and 
+             valor(nextposx,nextposy)*FACTOR_GIRO >= valor(leftposx,leftposy) and
+             valor(nextposx,nextposy)*FACTOR_GIRO >= valor(rghtposx,rghtposy)) {
         accion = actFORWARD;
     }
-    else if (mapa[leftposx][leftposy] >= mapa[rghtposx][rghtposy])
+    else if (valor(leftposx,leftposy) >= valor(rghtposx,rghtposy))
         accion = actTURN_L;
     else
         accion = actTURN_R;
