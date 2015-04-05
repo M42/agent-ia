@@ -10,7 +10,7 @@ using namespace std;
 void draw_map(Map& map) {
     for (int i=0; i<20; i++) {
         for (int j=0; j<20; j++) {
-            if (map[i][j])
+            if (map[i][j] == 0)
                 cerr << "0";
             else
                 cerr << "-";
@@ -66,6 +66,7 @@ void Agent::update() {
     updateDir();
     updateMap();
     updatePos();
+    updateAct();
 }
 
 void Agent::updateDir() {
@@ -91,8 +92,12 @@ void Agent::updatePos() {
 
 void Agent::updateMap() {
     if (bump_) {
-        mapa[nextposx][nextposy] = true;
+        mapa[nextposx][nextposy] = 0;
     }
+}
+
+void Agent::updateAct() {
+    pastAction = currAction;
 }
 
 // -----------------------------------------------------------
@@ -109,14 +114,23 @@ Agent::ActionType Agent::Think_randomly() {
 
 Agent::ActionType Agent::Think_walls() {
     ActionType accion;
+    int prob_forw = 1;
+    int prob_left = 1;
+    int prob_rght = 1;
 
     // Evita caminar contra una pared
-    if (mapa[nextposx][nextposy] == true) {
-        accion = aleatoriza(0,1,1,0,1,0);
+    if (mapa[nextposx][nextposy] == 0) {
+        prob_forw = 0;
     }
-    else {
-        accion = Think_randomly();
-    }
+
+    // Evita contravenir la acción anterior
+    if (pastAction == actTURN_L)
+        prob_rght = 0;
+
+    if (pastAction == actTURN_R)
+        prob_left = 0;
+
+    accion = aleatoriza(prob_forw,prob_left,prob_rght,0,1,0);
 
     // Si al girar va a encontrar una pared, gira al otro lado
     int giraposx = posx;
@@ -129,7 +143,7 @@ Agent::ActionType Agent::Think_walls() {
     case right: giraposx++; break;
     }
     
-    if (mapa[giraposx][giraposy] == true) {
+    if (mapa[giraposx][giraposy] == 0) {
         if (accion == actTURN_L)
             accion = actTURN_R;
         else

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 using namespace std;
-typedef vector< vector<bool> > Map;
+typedef vector< vector<int> > Map;
 
 // -----------------------------------------------------------
 //				class Agent
@@ -22,8 +22,9 @@ class Agent {
         nextposy = 9;
         dir  = up;
         
-        mapa = Map(20, vector<bool>(20, false));
+        mapa = Map(20, vector<int>(20, 2000));
         currAction = actIDLE;
+        pastAction = actIDLE;
     }
 
     enum ActionType {
@@ -53,6 +54,7 @@ class Agent {
     void updateDir();
     void updatePos();
     void updateMap();
+    void updateAct();
 
  private:
     int trufa_size_;
@@ -65,6 +67,7 @@ class Agent {
     Direction dir;
 
     ActionType currAction;
+    ActionType pastAction;
 
     Map mapa;
 
