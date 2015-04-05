@@ -218,7 +218,10 @@ Agent::ActionType Agent::Think_walls() {
 }
 
 Agent::ActionType Agent::Think_map() {
-    const int SUFICIENTE_TRUFA = 10000;
+#ifndef SUFICIENTE_TRUFA
+#define SUFICIENTE_TRUFA 4000
+#endif
+
     const double FACTOR_GIRO   = 1.5;  
     ActionType accion;
 
