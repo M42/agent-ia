@@ -4,7 +4,11 @@
 #include <string>
 #include <vector>
 using namespace std;
-typedef vector< vector<int> > Map;
+typedef long long int lli;
+typedef vector< vector<lli> > Map;
+
+const int INITIAL_MAP  = 2000;
+const int INITIAL_GROW = 15; 
 
 // -----------------------------------------------------------
 //				class Agent
@@ -22,9 +26,11 @@ class Agent {
         nextposy = 9;
         dir  = up;
         
-        mapa = Map(20, vector<int>(20, 2000));
+        mapa = Map(20, vector<lli>(20, INITIAL_MAP));
         currAction = actIDLE;
         pastAction = actIDLE;
+
+        growFactor = INITIAL_GROW;
     }
 
     enum ActionType {
@@ -73,6 +79,8 @@ class Agent {
 
     Direction gira(Direction,ActionType);
     ActionType aleatoriza(int,int,int,int,int,int);
+
+    int growFactor;
 };
 
 string ActionStr(Agent::ActionType);

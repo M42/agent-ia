@@ -10,10 +10,11 @@ using namespace std;
 void draw_map(Map& map) {
     for (int i=0; i<20; i++) {
         for (int j=0; j<20; j++) {
-            if (map[i][j] == 0)
-                cerr << "0";
-            else
-                cerr << "-";
+            cerr << map[i][j] << "\t";
+            //if (map[i][j] == 0)
+                //cerr << "0";
+            //else
+                //cerr << "-";
         }
         cerr << endl;
     }
@@ -91,8 +92,25 @@ void Agent::updatePos() {
 }
 
 void Agent::updateMap() {
+    // Adds walls to the map
     if (bump_) {
         mapa[nextposx][nextposy] = 0;
+    }
+
+    // Probabilistic growth
+    for (int i=0; i<20; i++)
+        for (int j=0; j<20; j++) 
+            if (mapa[i][j] != 0)
+                mapa[i][j] += growFactor;
+
+    // Extraction
+    if (currAction == actEXTRACT) {
+        mapa[posx][posy] = 1;
+    }
+
+    // Sniffing
+    if (currAction == actSNIFF) {
+        mapa[posx][posy] = 1 + trufa_size_ * 1000;
     }
 }
 
