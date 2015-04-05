@@ -6,8 +6,11 @@
 using namespace std;
 typedef long long int lli;
 typedef vector< vector<lli> > Map;
+typedef vector< vector<bool> > MapB;
 
-const int INITIAL_MAP  = 2000;
+#ifndef INITIAL_MAP
+#define INITIAL_MAP 2000
+#endif
 const int INITIAL_GROW = 15; 
 
 // -----------------------------------------------------------
@@ -31,6 +34,7 @@ class Agent {
         dir  = up;
         
         mapa = Map(20, vector<lli>(20, INITIAL_MAP));
+        expl = MapB(20, vector<bool>(20, false));
         currAction = actIDLE;
         pastAction = actIDLE;
 
@@ -99,6 +103,7 @@ class Agent {
     ActionType pastAction;
 
     Map mapa;
+    MapB expl;
 
     Direction gira(Direction,ActionType);
     ActionType aleatoriza();

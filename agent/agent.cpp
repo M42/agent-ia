@@ -7,10 +7,14 @@
 using namespace std;
 
 // AUXILIARY FUNCTIONS
-void draw_map(Map& map) {
+void draw_map(Map& map, MapB& expl) {
     for (int i=0; i<20; i++) {
         for (int j=0; j<20; j++) {
-            cerr << map[i][j] << "\t";
+            //cerr << map[i][j] << "\t";
+            if (expl[i][j])
+                cerr << "*";
+            else
+                cerr << "?";
         }
         cerr << endl;
     }
@@ -118,6 +122,7 @@ void Agent::updateMap() {
     // Adds walls to the map
     if (bump_) {
         mapa[nextposx][nextposy] = 0;
+        expl[nextposx][nextposy] = true;
     }
 
     // Probabilistic growth
@@ -135,6 +140,10 @@ void Agent::updateMap() {
     if (currAction == actSNIFF) {
         mapa[posx][posy] = 1 + trufa_size_ * 1000;
     }
+
+    // Exploration
+    if (!expl[posx][posy])
+        expl[posx][posy] = true;
 }
 
 void Agent::updateAct() {
@@ -222,7 +231,7 @@ Agent::ActionType Agent::Think_map() {
 #define SUFICIENTE_TRUFA 4000
 #endif
 
-    const double FACTOR_GIRO   = 1.5;  
+    const double FACTOR_GIRO = 1.5;  
     ActionType accion;
 
     if (mapa[posx][posy] >= SUFICIENTE_TRUFA) {
@@ -250,7 +259,7 @@ Agent::ActionType Agent::Think() {
 
     // POSCONDITIONS
     iteration++;
-    if (iteration == 2000) draw_map(mapa);
+    if (iteration == 2000) draw_map(mapa, expl);
 
 
     currAction = Think_random();
