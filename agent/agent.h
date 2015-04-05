@@ -24,6 +24,10 @@ class Agent {
         posy = 10;
         nextposx = 10;
         nextposy = 9;
+        leftposx = 9;
+        leftposy = 10;
+        rghtposx = 11;
+        rghtposy = 10;
         dir  = up;
         
         mapa = Map(20, vector<lli>(20, INITIAL_MAP));
@@ -31,6 +35,13 @@ class Agent {
         pastAction = actIDLE;
 
         growFactor = INITIAL_GROW;
+
+        prob_forw = 0;
+        prob_left = 0;
+        prob_rght = 0;
+        prob_snif = 0;
+        prob_extr = 0;
+        prob_idle = 0;
     }
 
     enum ActionType {
@@ -55,6 +66,7 @@ class Agent {
     ActionType Think_random();
     ActionType Think_randomly();
     ActionType Think_walls();
+    ActionType Think_map();
 
     void update();
     void updateDir();
@@ -70,7 +82,18 @@ class Agent {
     int posy;
     int nextposx;
     int nextposy;
+    int leftposx;
+    int leftposy;
+    int rghtposx;
+    int rghtposy;
     Direction dir;
+
+    int prob_forw;
+    int prob_left;
+    int prob_rght;
+    int prob_snif;
+    int prob_extr;
+    int prob_idle;
 
     ActionType currAction;
     ActionType pastAction;
@@ -78,7 +101,7 @@ class Agent {
     Map mapa;
 
     Direction gira(Direction,ActionType);
-    ActionType aleatoriza(int,int,int,int,int,int);
+    ActionType aleatoriza();
 
     int growFactor;
 };

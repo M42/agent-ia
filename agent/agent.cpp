@@ -11,10 +11,6 @@ void draw_map(Map& map) {
     for (int i=0; i<20; i++) {
         for (int j=0; j<20; j++) {
             cerr << map[i][j] << "\t";
-            //if (map[i][j] == 0)
-                //cerr << "0";
-            //else
-                //cerr << "-";
         }
         cerr << endl;
     }
@@ -40,7 +36,14 @@ Agent::Direction Agent::gira(Direction d, ActionType a) {
     return d;
 }
 
-Agent::ActionType Agent::aleatoriza(int pf, int pl, int pr, int ps, int pe, int pi) {
+Agent::ActionType Agent::aleatoriza() {
+    int pf = prob_forw;
+    int pl = prob_left;
+    int pr = prob_rght;
+    int ps = prob_snif;
+    int pe = prob_extr;
+    int pi = prob_idle;
+
     int suma = pf + pl + pr + ps + pe + pi;
     int prob = rand()%suma;
     
@@ -89,6 +92,26 @@ void Agent::updatePos() {
     case left: nextposx--; break;
     case right: nextposx++; break;
     }
+
+    leftposx = posx;
+    leftposy = posy;
+
+    switch (gira(dir,actTURN_L)) {
+    case up: leftposy--; break;
+    case down: leftposy++; break;
+    case left: leftposx--; break;
+    case right: leftposx++; break;
+    }
+
+    rghtposx = posx;
+    rghtposy = posy;
+
+    switch (gira(dir,actTURN_R)) {
+    case up: rghtposy--; break;
+    case down: rghtposy++; break;
+    case left: rghtposx--; break;
+    case right: rghtposx++; break;
+    }
 }
 
 void Agent::updateMap() {
@@ -119,22 +142,45 @@ void Agent::updateAct() {
 }
 
 // -----------------------------------------------------------
+// Analizing
+// -----------------------------------------------------------
+
+
+
+// -----------------------------------------------------------
 // Thinking
 // -----------------------------------------------------------
 
 Agent::ActionType Agent::Think_random() {
-    return aleatoriza(1,1,1,1,1,0);
+    prob_forw = 1;
+    prob_left = 1;
+    prob_rght = 1;
+    prob_extr = 1;
+    prob_snif = 1;
+    prob_idle = 0;
+
+    return aleatoriza();
 }
 
 Agent::ActionType Agent::Think_randomly() {
-    return aleatoriza(1,1,1,0,1,0);
+    prob_forw = 1;
+    prob_left = 1;
+    prob_rght = 1;
+    prob_extr = 1;
+    prob_snif = 0;
+    prob_idle = 0;
+
+    return aleatoriza();
 }
 
 Agent::ActionType Agent::Think_walls() {
     ActionType accion;
-    int prob_forw = 1;
-    int prob_left = 1;
-    int prob_rght = 1;
+    prob_forw = 1;
+    prob_left = 1;
+    prob_rght = 1;
+    prob_extr = 1;
+    prob_snif = 0;
+    prob_idle = 0;
 
     // Evita caminar contra una pared
     if (mapa[nextposx][nextposy] == 0) {
@@ -148,7 +194,7 @@ Agent::ActionType Agent::Think_walls() {
     if (pastAction == actTURN_R)
         prob_left = 0;
 
-    accion = aleatoriza(prob_forw,prob_left,prob_rght,0,1,0);
+    accion = aleatoriza();
 
     // Si al girar va a encontrar una pared, gira al otro lado
     int giraposx = posx;
@@ -171,6 +217,27 @@ Agent::ActionType Agent::Think_walls() {
     return accion;
 }
 
+Agent::ActionType Agent::Think_map() {
+    const int SUFICIENTE_TRUFA = 10000;
+    const double FACTOR_GIRO   = 1.5;  
+    ActionType accion;
+
+    if (mapa[posx][posy] >= SUFICIENTE_TRUFA) {
+        accion = actEXTRACT;
+    }
+    else if (mapa[nextposx][nextposy] != 0 and 
+             mapa[nextposx][nextposy]*FACTOR_GIRO >= mapa[leftposx][leftposy] and
+             mapa[nextposx][nextposy]*FACTOR_GIRO >= mapa[rghtposx][rghtposy]) {
+        accion = actFORWARD;
+    }
+    else if (mapa[leftposx][leftposy] >= mapa[rghtposx][rghtposy])
+        accion = actTURN_L;
+    else
+        accion = actTURN_R;
+
+    return accion;
+}
+
 Agent::ActionType Agent::Think() {
     // Number of iterations
     static int iteration = 0;
@@ -189,6 +256,9 @@ Agent::ActionType Agent::Think() {
 #endif
 #ifdef WALLS
     currAction = Think_walls();
+#endif
+#ifdef MAP
+    currAction = Think_map();
 #endif
 
     return currAction;
