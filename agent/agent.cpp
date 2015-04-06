@@ -134,16 +134,22 @@ void Agent::updateMap() {
     // Extraction
     if (currAction == actEXTRACT) {
         mapa[posx][posy] = 1;
+        paso[posx][posy] = 0;
     }
 
     // Sniffing
     if (currAction == actSNIFF) {
         mapa[posx][posy] = 1 + trufa_size_ * 1000;
+        paso[posx][posy] = 0;
     }
 
     // Exploration
     if (!expl[posx][posy])
         expl[posx][posy] = true;
+
+    // Paso
+    if (mapa[posx][posy] > 1) 
+        paso[posx][posy]++;
 }
 
 void Agent::updateAct() {
@@ -155,7 +161,9 @@ void Agent::updateAct() {
 // -----------------------------------------------------------
 
 int Agent::valor(int posx, int posy) {
-    return mapa[posx][posy];// + (expl[posx][posy]? 2000 : 0);
+#define EXPLORATION_FACTOR 2000
+#define PASO_FACTOR 0
+    return mapa[posx][posy] + (expl[posx][posy]? 0 : EXPLORATION_FACTOR) - (paso[posx][posy]*PASO_FACTOR);
 }
 
 // -----------------------------------------------------------
@@ -230,7 +238,7 @@ Agent::ActionType Agent::Think_walls() {
 
 Agent::ActionType Agent::Think_map() {
 #ifndef SUFICIENTE_TRUFA
-#define SUFICIENTE_TRUFA 4000
+#define SUFICIENTE_TRUFA 4500
 #endif
 
     const double FACTOR_GIRO = 1.5;  

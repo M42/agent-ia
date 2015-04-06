@@ -8,10 +8,9 @@ typedef long long int lli;
 typedef vector< vector<lli> > Map;
 typedef vector< vector<bool> > MapB;
 
-#ifndef INITIAL_MAP
-#define INITIAL_MAP 2000
-#endif
-const int INITIAL_GROW = 15; 
+
+#define INITIAL_MAP 1
+#define INITIAL_GROW 15 
 
 // -----------------------------------------------------------
 //				class Agent
@@ -35,6 +34,7 @@ class Agent {
         
         mapa = Map(20, vector<lli>(20, INITIAL_MAP));
         expl = MapB(20, vector<bool>(20, false));
+        paso = Map(20, vector<lli>(20, 0));
         currAction = actIDLE;
         pastAction = actIDLE;
 
@@ -104,6 +104,7 @@ class Agent {
 
     Map mapa;
     MapB expl;
+    Map paso;
 
     Direction gira(Direction,ActionType);
     ActionType aleatoriza();
