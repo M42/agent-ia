@@ -271,8 +271,14 @@ Agent::ActionType Agent::Think() {
     iteration++;
     if (iteration == 2000) draw_map(mapa, expl);
 
-
+#ifndef RANDOMLY
+#ifndef WALLS
+#ifndef MAP
     currAction = Think_random();
+#endif
+#endif
+#endif
+
 #ifdef RANDOMLY
     currAction = Think_randomly();
 #endif
