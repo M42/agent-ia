@@ -39,6 +39,7 @@ class Agent {
         pastAction = actIDLE;
 
         growFactor = INITIAL_GROW;
+        d_suficiente_trufa = 1;
 
         prob_forw = 0;
         prob_left = 0;
@@ -105,6 +106,8 @@ class Agent {
     Map mapa;
     MapB expl;
     Map paso;
+
+    float d_suficiente_trufa;
 
     Direction gira(Direction,ActionType);
     ActionType aleatoriza();

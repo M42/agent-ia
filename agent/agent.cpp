@@ -244,10 +244,13 @@ Agent::ActionType Agent::Think_map() {
 #ifndef FACTOR_GIRO
 #define FACTOR_GIRO 1.1  
 #endif
+    
+    static int iteracion = 0;
+    iteracion++;
 
     ActionType accion;
 
-    if (mapa[posx][posy] >= SUFICIENTE_TRUFA) {
+    if (mapa[posx][posy] >= SUFICIENTE_TRUFA * d_suficiente_trufa) {
         accion = actEXTRACT;
     }
     else if (valor(nextposx,nextposy) != 0 and 
