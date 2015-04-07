@@ -40,7 +40,7 @@ void doOneStep();
 void doOneRun();
 void doAllRun();
 void nextRun();
-void newGame();
+void newGame(int);
 
 
 void doOneStep(){
@@ -80,11 +80,11 @@ void doAllRun(){
 void nextRun(){
     if(current_run<total_runs){
         ++current_run;
-        newGame();
+        newGame(current_run);
     }
 }
 
-void newGame(){
+void newGame(int current_run){
     fin.close();
     fin.clear();
     delete env;
@@ -124,11 +124,13 @@ void newGame(){
 
 int main(int argc, char* argv[]){
     file_name_input = argv[1];
-    long long trufa_total;
+    long long trufa_total = 0;
 
     for (int i=0; i<10; i++) {
-        newGame();
+        newGame(i+1);
         doOneRun();
+        cerr << "Trufa collected: " << Trufa_Collected << endl;
+        //        cerr << "Trufa_total: " << trufa_total << endl;
         trufa_total += Trufa_Collected;
     }
 
