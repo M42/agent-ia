@@ -241,7 +241,10 @@ Agent::ActionType Agent::Think_map() {
 #define SUFICIENTE_TRUFA 4500
 #endif
 
-    const double FACTOR_GIRO = 1.5;  
+#ifndef FACTOR_GIRO
+#define FACTOR_GIRO 1.1  
+#endif
+
     ActionType accion;
 
     if (mapa[posx][posy] >= SUFICIENTE_TRUFA) {
