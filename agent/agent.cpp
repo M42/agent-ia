@@ -279,8 +279,8 @@ Agent::ActionType Agent::Think() {
 
 #ifndef RANDOMLY
 #ifndef WALLS
-#ifndef MAP
-    currAction = Think_random();
+#ifndef RANDOM
+    currAction = Think_map();
 #endif
 #endif
 #endif
@@ -291,8 +291,8 @@ Agent::ActionType Agent::Think() {
 #ifdef WALLS
     currAction = Think_walls();
 #endif
-#ifdef MAP
-    currAction = Think_map();
+#ifdef RANDOM
+    currAction = Think_random();
 #endif
 
     return currAction;
