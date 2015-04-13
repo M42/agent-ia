@@ -75,6 +75,7 @@ void Agent::update() {
     updateMap();
     updatePos();
     updateAct();
+    iteration++;
 }
 
 void Agent::updateDir() {
@@ -244,13 +245,11 @@ Agent::ActionType Agent::Think_map() {
 #ifndef FACTOR_GIRO
 #define FACTOR_GIRO 1.1  
 #endif
-    
-    static int iteracion = 0;
-    iteracion++;
 
     ActionType accion;
 
-    if (mapa[posx][posy] >= SUFICIENTE_TRUFA * d_suficiente_trufa) {
+    if (mapa[posx][posy] >= SUFICIENTE_TRUFA * d_suficiente_trufa or 
+        (iteration>1950 and mapa[posx][posy]>SUFICIENTE_TRUFA*0.15)) {
         accion = actEXTRACT;
     }
     else if (valor(nextposx,nextposy) != 0 and 
@@ -268,13 +267,13 @@ Agent::ActionType Agent::Think_map() {
 
 Agent::ActionType Agent::Think() {
     // Number of iterations
-    static int iteration = 0;
+    static int iterations = 0;
 
     // PRECONDITIONS
     update();
 
     // POSCONDITIONS
-    iteration++;
+    iterations++;
     if (iteration == 2000) draw_map(mapa, expl);
 
 #ifndef RANDOMLY
