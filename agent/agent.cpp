@@ -242,6 +242,14 @@ Agent::ActionType Agent::Think_map() {
 #define SUFICIENTE_TRUFA 4500
 #endif
 
+#ifndef BASTANTE_TRUFA
+#define BASTANTE_TRUFA 3000
+#endif
+
+#ifndef TRUFA_UMBRAL
+#define TRUFA_UMBRAL 5
+#endif
+
 #ifndef FACTOR_GIRO
 #define FACTOR_GIRO 1.1  
 #endif
@@ -249,8 +257,12 @@ Agent::ActionType Agent::Think_map() {
     ActionType accion;
 
     if (mapa[posx][posy] >= SUFICIENTE_TRUFA * d_suficiente_trufa or 
-        (iteration>1950 and mapa[posx][posy]>SUFICIENTE_TRUFA*0.15)) {
+        (iteration>1950 and mapa[posx][posy]>SUFICIENTE_TRUFA*0.15) or
+        (trufa_size_ > TRUFA_UMBRAL)) {
         accion = actEXTRACT;
+    }
+    else if (mapa[posx][posy] >= BASTANTE_TRUFA and trufa_size_ == -1) {
+        accion = actSNIFF;
     }
     else if (valor(nextposx,nextposy) != 0 and 
              valor(nextposx,nextposy)*FACTOR_GIRO >= valor(leftposx,leftposy) and
