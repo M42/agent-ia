@@ -72,11 +72,20 @@ void Agent::update() {
     // Luego actualiza su posición y la acción
     updatePos();
     updateAct();
+    // Finalmente calcula el olor
+    updateSnif();
     iteration++;
 }
 
 void Agent::updateDir() {
     dir = gira(dir,currAction);
+}
+
+void Agent::updateSnif() {
+    if (trufa_size_ >= 0) {
+        suma_olor += trufa_size_;
+        veces_olor++;    
+    }
 }
 
 void Agent::updatePos() {
@@ -132,22 +141,28 @@ void Agent::updateMap() {
     // Extraction
     if (currAction == actEXTRACT) {
         mapa[posx][posy] = 1;
-        paso[posx][posy] = 0;
+        //paso[posx][posy] = 0;
     }
 
     // Sniffing
+    /*
     if (currAction == actSNIFF) {
         mapa[posx][posy] = 1 + trufa_size_ * 1000;
         paso[posx][posy] = 0;
     }
+    */
 
     // Exploration
     if (!expl[posx][posy])
         expl[posx][posy] = true;
 
     // Paso
-    if (mapa[posx][posy] > 1) 
-        paso[posx][posy]++;
+    //if (mapa[posx][posy] > 1) 
+    //    paso[posx][posy]++;
+
+    // Olor
+    if (currAction == actSNIFF or currAction == actEXTRACT)
+        olor[posx][posy] == false;
 }
 
 void Agent::updateAct() {
@@ -238,16 +253,26 @@ Agent::ActionType Agent::Think_map() {
 #define SUFICIENTE_TRUFA 4500
 #endif
 
+#ifndef SUFICIENTE_TRUFA_SLOW
+#define SUFICIENTE_TRUFA_SLOW 7000
+#endif
+
 #ifndef FACTOR_GIRO
 #define FACTOR_GIRO 1.1  
 #endif
 
     ActionType accion;
 
-    if (mapa[posx][posy] >= SUFICIENTE_TRUFA * d_suficiente_trufa or 
+    if ((es_rapido     and mapa[posx][posy] >= SUFICIENTE_TRUFA) or
+        (not es_rapido and mapa[posx][posy] >= SUFICIENTE_TRUFA_SLOW) or
         (iteration>1950 and mapa[posx][posy]>SUFICIENTE_TRUFA*0.15)) {
         accion = actEXTRACT;
     }
+#ifdef OLOR
+    if (iteration <= 260 and iteration >= 240 and olor[posx][posy]) {
+        accion = actSNIFF;
+    }
+#endif
     else if (valor(nextposx,nextposy) != 0 and 
              valor(nextposx,nextposy)*FACTOR_GIRO >= valor(leftposx,leftposy) and
              valor(nextposx,nextposy)*FACTOR_GIRO >= valor(rghtposx,rghtposy)) {

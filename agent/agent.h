@@ -34,13 +34,14 @@ class Agent {
         
         mapa = Map(20, vector<lli>(20, INITIAL_MAP));
         expl = MapB(20, vector<bool>(20, false));
-        paso = Map(20, vector<lli>(20, 0));
+        olor = MapB(20, vector<bool>(20, true));
         currAction = actIDLE;
         pastAction = actIDLE;
 
         growFactor = INITIAL_GROW;
         d_suficiente_trufa = 1;
         iteration = 0;
+        es_rapido = true;
 
         prob_forw = 0;
         prob_left = 0;
@@ -48,6 +49,9 @@ class Agent {
         prob_snif = 0;
         prob_extr = 0;
         prob_idle = 0;
+
+        suma_olor = 0;
+        veces_olor = 0;
     }
 
     enum ActionType {
@@ -79,6 +83,7 @@ class Agent {
     void updatePos();
     void updateMap();
     void updateAct();
+    void updateSnif();
 
  private:
     int trufa_size_;
@@ -106,16 +111,19 @@ class Agent {
 
     Map mapa;
     MapB expl;
-    Map paso;
+    MapB olor;
 
     float d_suficiente_trufa;
     int iteration;
+    bool es_rapido;
 
     Direction gira(Direction,ActionType);
     ActionType aleatoriza();
     int valor(int,int);
 
     int growFactor;
+    int suma_olor;
+    int veces_olor;
 };
 
 string ActionStr(Agent::ActionType);
