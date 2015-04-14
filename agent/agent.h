@@ -122,7 +122,7 @@ class Agent {
     int valor(int,int);
 
     int growFactor;
-    int suma_olor;
+    float suma_olor;
     int veces_olor;
 };
 

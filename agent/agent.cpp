@@ -83,7 +83,7 @@ void Agent::updateDir() {
 
 void Agent::updateSnif() {
     if (trufa_size_ >= 0) {
-        suma_olor += trufa_size_;
+        suma_olor += ((float) trufa_size_)/((float) iteration/200);
         veces_olor++;    
     }
 }
@@ -162,7 +162,7 @@ void Agent::updateMap() {
 
     // Olor
     if (currAction == actSNIFF or currAction == actEXTRACT)
-        olor[posx][posy] == false;
+        olor[posx][posy] = false;
 }
 
 void Agent::updateAct() {
@@ -269,7 +269,7 @@ Agent::ActionType Agent::Think_map() {
         accion = actEXTRACT;
     }
 #ifdef OLOR
-    if (iteration <= 260 and iteration >= 240 and olor[posx][posy]) {
+    else if (iteration <= 290 and iteration >= 280 and olor[posx][posy]) {
         accion = actSNIFF;
     }
 #endif
@@ -282,6 +282,14 @@ Agent::ActionType Agent::Think_map() {
         accion = actTURN_L;
     else
         accion = actTURN_R;
+
+#ifdef OLOR
+    if (iteration == 291) {
+        double factor_olor = ((double) suma_olor)/veces_olor;
+        if (factor_olor < 4) es_rapido = false;
+        cerr << "Factor de olor: " << factor_olor << endl;
+    }
+#endif
 
     return accion;
 }
