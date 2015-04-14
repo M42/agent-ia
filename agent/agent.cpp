@@ -6,20 +6,12 @@
 
 using namespace std;
 
-// AUXILIARY FUNCTIONS
-void draw_map(Map& map, MapB& expl) {
-    for (int i=0; i<20; i++) {
-        for (int j=0; j<20; j++) {
-            //cerr << map[i][j] << "\t";
-            if (expl[i][j])
-                cerr << "*";
-            else
-                cerr << "?";
-        }
-        cerr << endl;
-    }
-}
+// Funciones auxiliares
 
+
+/**
+  Proporciona giros para una función.
+ */ 
 Agent::Direction Agent::gira(Direction d, ActionType a) {
     if (a == actTURN_L)
         switch (d) {
@@ -40,6 +32,9 @@ Agent::Direction Agent::gira(Direction d, ActionType a) {
     return d;
 }
 
+/**
+  Caso general de una estrategia aleatoria
+ */
 Agent::ActionType Agent::aleatoriza() {
     int pf = prob_forw;
     int pl = prob_left;
@@ -66,13 +61,15 @@ Agent::ActionType Agent::aleatoriza() {
 }
 
 //////////////////////////////
-// Reacting
+// Reacción
 //////////////////////////////
 
 void Agent::update() {
-    // Those functions do not commute!
+    // Cuidado, estas funciones no conmutan
+    // Primero actualiza su dirección y el mapa
     updateDir();
     updateMap();
+    // Luego actualiza su posición y la acción
     updatePos();
     updateAct();
     iteration++;
@@ -163,8 +160,7 @@ void Agent::updateAct() {
 
 int Agent::valor(int posx, int posy) {
 #define EXPLORATION_FACTOR 2000
-#define PASO_FACTOR 0
-    return mapa[posx][posy] + (expl[posx][posy]? 0 : EXPLORATION_FACTOR) - (paso[posx][posy]*PASO_FACTOR);
+    return mapa[posx][posy] + (expl[posx][posy]? 0 : EXPLORATION_FACTOR);
 }
 
 // -----------------------------------------------------------
@@ -242,14 +238,6 @@ Agent::ActionType Agent::Think_map() {
 #define SUFICIENTE_TRUFA 4500
 #endif
 
-#ifndef BASTANTE_TRUFA
-#define BASTANTE_TRUFA 3000
-#endif
-
-#ifndef TRUFA_UMBRAL
-#define TRUFA_UMBRAL 5
-#endif
-
 #ifndef FACTOR_GIRO
 #define FACTOR_GIRO 1.1  
 #endif
@@ -257,12 +245,8 @@ Agent::ActionType Agent::Think_map() {
     ActionType accion;
 
     if (mapa[posx][posy] >= SUFICIENTE_TRUFA * d_suficiente_trufa or 
-        (iteration>1950 and mapa[posx][posy]>SUFICIENTE_TRUFA*0.15) or
-        (trufa_size_ > TRUFA_UMBRAL)) {
+        (iteration>1950 and mapa[posx][posy]>SUFICIENTE_TRUFA*0.15)) {
         accion = actEXTRACT;
-    }
-    else if (mapa[posx][posy] >= BASTANTE_TRUFA and trufa_size_ == -1) {
-        accion = actSNIFF;
     }
     else if (valor(nextposx,nextposy) != 0 and 
              valor(nextposx,nextposy)*FACTOR_GIRO >= valor(leftposx,leftposy) and
@@ -278,16 +262,10 @@ Agent::ActionType Agent::Think_map() {
 }
 
 Agent::ActionType Agent::Think() {
-    // Number of iterations
-    static int iterations = 0;
-
-    // PRECONDITIONS
+    // Actualiza las variables de mapa y posición.
     update();
 
-    // POSCONDITIONS
-    iterations++;
-    if (iteration == 2000) draw_map(mapa, expl);
-
+    // Incluye un módulo reactivo distinto según compilación.
 #ifndef RANDOMLY
 #ifndef WALLS
 #ifndef RANDOM
